@@ -44,17 +44,17 @@ namespace MediaSplitter
             Console.WriteLine("Pictures copy started...");
             CopyFiles(drive, destPic, sourcePics);
             var s2 = DateTime.Now;
-            Console.WriteLine(string.Format("Pictures copied: {0} sec", (s2 - s1).TotalMinutes.ToString()));
+            Console.WriteLine(string.Format("Pictures copied: {0} sec", (s2 - s1).TotalSeconds.ToString()));
 
             Console.WriteLine("Videos copy started...");
             CopyFiles(drive, destVid, sourceVideos);
             var s3 = DateTime.Now;
-            Console.WriteLine(string.Format("Videos copied: {0} sec", (s3 - s2).TotalMinutes.ToString()));
+            Console.WriteLine(string.Format("Videos copied: {0} sec", (s3 - s2).TotalSeconds.ToString()));
 
             Console.WriteLine("Other files copy started...");
             CopyFiles(drive, destOther, otherFiles);
             var s4 = DateTime.Now;
-            Console.WriteLine(string.Format("Other files copied: {0} sec", (s4 - s3).TotalMinutes.ToString()));
+            Console.WriteLine(string.Format("Other files copied: {0} sec", (s4 - s3).TotalSeconds.ToString()));
 
             Console.ReadKey();
         }
