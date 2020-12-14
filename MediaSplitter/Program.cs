@@ -14,9 +14,14 @@ namespace MediaSplitter
         public static List<string> PicTypes { get; set; }
         public static List<string> VideoTypes { get; set; }
 
+
+        static List<string> problemFiles = new List<string>();
+        static List<string> duplicateFiles = new List<string>();
+        static List<string> sameNameFiles = new List<string>();
+
         static void Main(string[] args)
         {
-            var folderPath = ConfigurationManager.AppSettings["sourcePath"]; 
+            var folderPath = ConfigurationManager.AppSettings["sourcePath"];
 
             FileTypes = new List<string> { "*.*"/*,  */};
             VideoTypes = ConfigurationManager.AppSettings["videoTypes"].Split(',', ';', ' ').Where(f => !string.IsNullOrEmpty(f)).Select(f => f.Trim()).ToList();
@@ -56,14 +61,23 @@ namespace MediaSplitter
             var s4 = DateTime.Now;
             Console.WriteLine(string.Format("Other files copied: {0} sec", (s4 - s3).TotalSeconds.ToString()));
 
+            LogProblems();
+
             Console.ReadKey();
+        }
+
+        private static void LogProblems()
+        {
+            if (duplicateFiles.Any())
+                File.WriteAllLines(@".\_duplicateFiles.txt", duplicateFiles);
+            if (sameNameFiles.Any())
+                File.WriteAllLines(@".\_sameNameFiles.txt", sameNameFiles);
+            if (problemFiles.Any())
+                File.WriteAllLines(@".\_problemFiles.txt", problemFiles);
         }
 
         private static void CopyFiles(string drive, string destFolder, IEnumerable<string> source)
         {
-            var problemFiles = new List<string>();
-            var duplicateFiles = new List<string>();
-            var sameNameFiles = new List<string>();
 
             foreach (var p in source)
             {
@@ -109,12 +123,6 @@ namespace MediaSplitter
                     problemFiles.Add(string.Format("{0} - {1}", p, filePath));
                 }
             }
-            if (duplicateFiles.Any())
-                File.WriteAllLines(@".\_duplicateFiles.txt", duplicateFiles);
-            if (sameNameFiles.Any())
-                File.WriteAllLines(@".\_sameNameFiles.txt" , sameNameFiles);
-            if (problemFiles.Any())
-                File.WriteAllLines(@".\_problemFiles.txt", problemFiles);
         }
 
         private static DateTime GetFileDate(string p)
